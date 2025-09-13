@@ -12,14 +12,19 @@ import {
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { useState } from "react";
-import { useAuth, SignInButton, SignOutButton } from "@clerk/nextjs";
+import { useAuth, SignInButton, SignOutButton, useUser } from "@clerk/nextjs";
 import { useTheme } from "next-themes";
 import Link from "next/link";
+
 
 function MobileNavbar() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const { isSignedIn } = useAuth();
   const { theme, setTheme } = useTheme();
+  const { user } = useUser();
+
+  const handleClose = () => setShowMobileMenu(false);
+
 
   return (
     <div className="flex md:hidden items-center space-x-2">
@@ -46,7 +51,7 @@ function MobileNavbar() {
           </SheetHeader>
           <nav className="flex flex-col space-y-4 mt-6">
             <Button variant="ghost" className="flex items-center gap-3 justify-start" asChild>
-              <Link href="/">
+              <Link href="/" onClick={handleClose}>
                 <HomeIcon className="w-4 h-4" />
                 Home
               </Link>
@@ -55,19 +60,21 @@ function MobileNavbar() {
             {isSignedIn ? (
               <>
                 <Button variant="ghost" className="flex items-center gap-3 justify-start" asChild>
-                  <Link href="/notifications">
+                  <Link href="/notifications" onClick={handleClose}>
                     <BellIcon className="w-4 h-4" />
                     Notifications
                   </Link>
                 </Button>
                 <Button variant="ghost" className="flex items-center gap-3 justify-start" asChild>
-                  <Link href="/profile">
+                  <Link href={`/profile/${
+                user.username ?? user.emailAddresses[0].emailAddress.split("@")[0]
+              }`} onClick={handleClose}>
                     <UserIcon className="w-4 h-4" />
                     Profile
                   </Link>
                 </Button>
                 <SignOutButton>
-                  <Button variant="ghost" className="flex items-center gap-3 justify-start w-full">
+                  <Button variant="ghost" className="flex items-center gap-3 justify-start w-full" onClick={handleClose}>
                     <LogOutIcon className="w-4 h-4" />
                     Logout
                   </Button>
@@ -75,7 +82,7 @@ function MobileNavbar() {
               </>
             ) : (
               <SignInButton mode="modal">
-                <Button variant="default" className="w-full">
+                <Button variant="default" className="w-full" onClick={handleClose}>
                   Sign In
                 </Button>
               </SignInButton>
