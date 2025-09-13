@@ -67,7 +67,7 @@ function MobileNavbar() {
                 </Button>
                 <Button variant="ghost" className="flex items-center gap-3 justify-start" asChild>
                   <Link href={`/profile/${
-                user.username ?? user.emailAddresses[0].emailAddress.split("@")[0]
+                user?.username ?? user?.emailAddresses[0].emailAddress.split("@")[0]
               }`} onClick={handleClose}>
                     <UserIcon className="w-4 h-4" />
                     Profile
